@@ -1,0 +1,18 @@
+{
+    "name": "sql2mongo/sql2mongo",
+    "license": "MIT",
+    "type": "project",
+    "description": "Query MongoDB documents easily with PHP object SQL oriented style",
+    "autoload": {
+        "psr-0": { "": "src/" }
+    },
+    "authors": [
+        {
+            "name": "Frederic ROBINET",
+            "email": "robinef@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.2.4"
+    }
+}
