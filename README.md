@@ -30,7 +30,7 @@ $cursor = $this->object->query();
 
 ## Unit testing
 
-Yo dawg i heard you like uni tests ?! You can run :
+Yo dawg i heard you like unit tests ?! You can run :
 
 ``` bash
 phpunit -c phpunit.xml.dist tests/Sql2Mongo/Tests/QueryBuilderTest.php
