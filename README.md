@@ -23,7 +23,7 @@ $builder = new QueryBuilder($db);
 $builder->select()->from('cars');
 $builder->sum('count');
 $builder->group('brand');
-$cursor = $this->object->query();
+$cursor = $builder->query();
 
 
 ```
