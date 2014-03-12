@@ -7,4 +7,9 @@ error_reporting(E_ALL | E_STRICT);
 date_default_timezone_set('UTC');
 
 // Include the composer autoloader
-$autoloader = require_once(dirname(__DIR__) . '/vendor/autoload.php');
+$autoloader = dirname(__DIR__) . '/vendor/autoload.php';
+if(is_file($autoloader)) {
+	require_once($autoloader);
+} else {
+	require_once('../../autoload.php');
+}

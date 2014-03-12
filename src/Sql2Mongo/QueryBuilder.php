@@ -135,7 +135,7 @@ class QueryBuilder {
 		if($mongoDb instanceof \MongoDB) {
 			$this->_client = $mongoDb;
 		} else {
-			throw new Exception(_('Client is not a PHP MongoClient'));
+			throw new \Exception(_('Client is not a PHP MongoClient'));
 		}
 	}
 	
@@ -143,11 +143,12 @@ class QueryBuilder {
 	 * Sum val
 	 *
 	 * @param string $sumVal
+	 * @param Boolean $isNum Tell if field is not numeric
 	 */
-	public function sum($sumVal) {
+	public function sum($sumVal, $isNum = 1) {
 
 		if(isset($sumVal) && is_string($sumVal)) {
-			$this->_addSum[$sumVal] = $sumVal;
+			$this->_addSum[$sumVal] = $isNum;
 		}
 	}
 
@@ -288,21 +289,24 @@ class QueryBuilder {
 			}
 
 			//Prepare reduce function
-	
+
 			$reduce = "function(curr, result) {"; 
 			if(is_array($this->_addSum) && count($this->_addSum) > 0) {
-				foreach($this->_addSum as $sumVal) {
-			
-					$reduce .= sprintf("result.%sTotal += curr.%s;", $sumVal, $sumVal);
-					$initTotal = sprintf("%sTotal", $sumVal);
+				foreach($this->_addSum as $sumVal => $sumType) {
+					if($sumType) {
+						$reduce .= sprintf("result.%sTotal += curr.%s;", filter_var($sumVal,FILTER_SANITIZE_ENCODED), $sumVal);
+					} else {
+						$reduce .= sprintf("result.%sTotal += 1;", filter_var($sumVal,FILTER_SANITIZE_ENCODED));
+					}
+					$initTotal = sprintf("%sTotal", filter_var($sumVal,FILTER_SANITIZE_ENCODED));
 					$initial[$initTotal] = 0;
 				}
 			//Prepare conditions
 				
 			} else {
 				foreach($this->_keys as $key) {
-					$initial["items_".md5($key)] = array();
-					$reduce .= sprintf("result.items_%s.push(curr.%s);",md5($key), $key);
+					$initial["items_".filter_var($key,FILTER_SANITIZE_ENCODED)] = array();
+					$reduce .= sprintf("result.items_%s.push(curr.%s);",filter_var($sumVal,FILTER_SANITIZE_ENCODED), $key);
 				}	
 			}
 			$reduce .= "}";
@@ -317,9 +321,11 @@ class QueryBuilder {
 						}
 						break;
 					case self::OPERATOR_SUP:
-						$condition['condition'][$field] = array('$gt' => (int)$item['val']);
+						($item['val'] instanceof \MongoDate) ? $gtVal =  $item['val'] : $gtVal = (int)$item['val'];
+						$condition['condition'][$field] = array('$gt' => $gtVal);
 						break;
 					case self::OPERATOR_DIFF:
+						($item['val'] instanceof \MongoDate) ? $diffVal =  $item['val'] : $diffVal = (int)$item['val'];
 						$condition['condition'][$field] = array('$ne' => (int)$item['val']);
 						break;
 				}

@@ -30,11 +30,6 @@ SOFTWARE.
  */
 class QueryBuilderTest extends \PHPUnit_Framework_TestCase
 {
-
-	/**
-	 * @const Mongo server address
-	 */
-	const MONGO_ADDR = "127.0.0.1";
 	
 	/**
 	 * @const Brand 1 name
@@ -78,7 +73,9 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
      * This method is called before a test is executed.
      */
     protected function setUp() {
-	    $mongoClient = new \MongoClient(self::MONGO_ADDR);
+    	//From phpunit.xml config file
+    	$addr = MONGO_ADDR;
+	    $mongoClient = new \MongoClient($addr);
 		$this->_mongo = $mongoClient->selectDB('unittests');
 		$collection = $this->_mongo->selectCollection('cars');
         $this->object = new Sql2Mongo\QueryBuilder($this->_mongo);
@@ -111,22 +108,23 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
     public function testSum()
     {
 		$this->object->select()->from('cars');
-		$this->object->sum('count');
+		$this->object->sum('count', 1);
 		$this->object->group('brand');
 		
 		$cursor = $this->object->query();
+
 		$testOk = false;
-		foreach($cursor as $curs) {
+		foreach($cursor['retval'] as $curs) {
 			
-			if($curs[0]['brand'] == 'Audi') {
-				if($curs[0]['countTotal'] == 79) {
+			if($curs['brand'] == 'Audi') {
+				if($curs['countTotal'] == 79) {
 					$testOk = true;
 				} else {
 					$testOk = false;
 				}
 			}
-			if($curs[1]['brand'] == 'Volkswagen') {
-				if($curs[1]['countTotal'] == 126) {
+			if($curs['brand'] == 'Volkswagen') {
+				if($curs['countTotal'] == 126) {
 					$testOk = true;
 				} else {
 					$testOk = false;
@@ -203,22 +201,22 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
     public function testGroup()
     {
 		$this->object->select()->from('cars');
-		$this->object->sum('count');
+		$this->object->sum('count',1);
 		$this->object->group('brand');
 		
 		$cursor = $this->object->query();
 		$testOk = false;
-		foreach($cursor as $curs) {
-			
-			if($curs[0]['brand'] == 'Audi') {
-				if($curs[0]['countTotal'] == 79) {
+
+		foreach($cursor['retval'] as $curs) {	
+			if($curs['brand'] == 'Audi') {
+				if($curs['countTotal'] == 79) {
 					$testOk = true;
 				} else {
 					$testOk = false;
 				}
 			}
-			if($curs[1]['brand'] == 'Volkswagen') {
-				if($curs[1]['countTotal'] == 126) {
+			if($curs['brand'] == 'Volkswagen') {
+				if($curs['countTotal'] == 126) {
 					$testOk = true;
 				} else {
 					$testOk = false;
