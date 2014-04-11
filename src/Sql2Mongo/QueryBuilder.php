@@ -294,8 +294,6 @@ class QueryBuilder {
 			if(is_array($this->_addSum) && count($this->_addSum) > 0) {
 
 				foreach($this->_addSum as $sumVal => $sumType) {
-				var_dump($sumVal);
-				var_dump($sumType);
 					$sumValClean = preg_replace("/[^a-zA-Z0-9]+/", "", $sumVal);
 					if($sumType == 1) {
 						$reduce .= sprintf("result.%sTotal += curr.%s;", filter_var($sumValClean,FILTER_SANITIZE_ENCODED), $sumVal);
@@ -339,10 +337,7 @@ class QueryBuilder {
 				$condition['condition'][$field] = array('$gte' => $value[0],
 				'$lt' => $value[1]);
 			}
-var_dump($keys);
-var_dump($initial);
-var_dump($reduce);
-var_dump($condition);
+
 			$cursor = $collection->group($keys, $initial, $reduce, $condition);
 			/**
 			 * SELECT
