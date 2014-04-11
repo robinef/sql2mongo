@@ -15,10 +15,17 @@ using the familiar Sql syntax.
 Copy past the json snippet in your composer.json file
 
 ``` json
-
+{
+    "repositories": [
+        {
+            "url": "https://github.com/robinef/sql2mongo.git",
+            "type": "git"
+        }        
+    ],
     "require": {
         "sql2mongo/sql2mongo":"dev-master"
     }
+}
 ```
 
 or 
