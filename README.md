@@ -42,14 +42,14 @@ $builder = new QueryBuilder($db);
 $builder->select()->from('cars');
 $builder->sum('count');
 $builder->group('brand');
-$cursor = $this->object->query();
+$cursor = $builder->query();
 
 
 ```
 
 ## Unit testing
 
-Yo dawg i heard you like uni tests ?! You can run :
+Yo dawg i heard you like unit tests ?! You can run :
 
 ``` bash
 phpunit -c phpunit.xml.dist tests/Sql2Mongo/Tests/QueryBuilderTest.php
